@@ -4,6 +4,7 @@ import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.model.exception.BadFileTypeException;
 import com.example.schoolapigroupone.model.exception.DuplicateFileException;
 import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
+import com.example.schoolapigroupone.model.exception.LargeFileException;
 import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
 import com.example.schoolapigroupone.model.exception.SensitiveFileException;
 import com.example.schoolapigroupone.service.PictureService;
@@ -39,8 +40,10 @@ public class PictureController {
       return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
     } catch (FileNameInvalidException e) {
       return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
-    }catch (DuplicateFileException e) {
+    } catch (DuplicateFileException e) {
       return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    } catch (LargeFileException e) {
+      return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE);
     } catch (Exception e) {
       return new ResponseEntity<>("Unexpected error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }

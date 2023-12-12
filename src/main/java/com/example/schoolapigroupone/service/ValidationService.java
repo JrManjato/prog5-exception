@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +52,18 @@ public class ValidationService {
             .toList();
 
     return !picturesBase64.contains(base64);
+  }
+
+  public boolean isLargeFile(String base64) {
+    if (base64 == null || base64.isEmpty()) {
+      return false;
+    }
+
+    // Decode the base64 string to binary data
+    byte[] binaryData = Base64Utils.decodeFromString(base64);
+
+    // Check if the size of the binary data is over 8MB
+    return binaryData.length > 8 * 1024 * 1024; // 8MB in bytes
   }
 
 }

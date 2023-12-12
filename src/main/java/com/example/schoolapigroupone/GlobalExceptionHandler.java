@@ -3,6 +3,7 @@ package com.example.schoolapigroupone;
 import com.example.schoolapigroupone.model.exception.BadFileTypeException;
 import com.example.schoolapigroupone.model.exception.DuplicateFileException;
 import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
+import com.example.schoolapigroupone.model.exception.LargeFileException;
 import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,4 +44,9 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
   }
 
+  @ExceptionHandler(LargeFileException.class)
+  public ResponseEntity<String> handleLargeFileException(LargeFileException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
 }

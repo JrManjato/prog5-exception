@@ -3,6 +3,7 @@ import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.model.exception.BadFileTypeException;
 import com.example.schoolapigroupone.model.exception.DuplicateFileException;
 import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
+import com.example.schoolapigroupone.model.exception.LargeFileException;
 import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
 import com.example.schoolapigroupone.model.exception.SensitiveFileException;
 import com.example.schoolapigroupone.repository.PictureRepository;
@@ -32,6 +33,8 @@ public class PictureService {
       throw new FileNameInvalidException();
     }  else if (!validationService.isNotDuplicated(picture.getBase64())) {
       throw new DuplicateFileException();
+    }  else if (!validationService.isLargeFile(picture.getBase64())) {
+      throw new LargeFileException();
     }
 
     Picture savedPicture = savePicture(picture);
