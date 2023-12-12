@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 @Getter
@@ -18,6 +20,15 @@ public class ValidationService {
 
   public boolean isValidDirectory(String directory) {
     return directory != null && directory.equals("Pictures");
+  }
+
+  public boolean isValidFileType(String fileExtension) {
+    if (fileExtension == null) {
+      return false;
+    }
+
+    String lowerCaseExtension = fileExtension.toLowerCase();
+    return List.of("png", "webp", "jpeg", "jpg", "gif", "jfif").contains(lowerCaseExtension);
   }
 
 }

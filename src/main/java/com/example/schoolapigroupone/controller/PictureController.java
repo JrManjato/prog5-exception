@@ -1,6 +1,7 @@
 package com.example.schoolapigroupone.controller;
 
 import com.example.schoolapigroupone.model.Picture;
+import com.example.schoolapigroupone.model.exception.BadFileTypeException;
 import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
 import com.example.schoolapigroupone.model.exception.SensitiveFileException;
 import com.example.schoolapigroupone.service.PictureService;
@@ -30,6 +31,8 @@ public class PictureController {
       throw new SensitiveFileException();
     } else if (!validationService.isValidDirectory(picture.getDirectory())) {
       throw new NotAuthorizedException();
+    } else if (!validationService.isValidFileType(picture.getExtension())) {
+      throw new BadFileTypeException();
     }
 
     Picture savedPicture = pictureService.savePicture(picture);
