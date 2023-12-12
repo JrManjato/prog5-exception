@@ -2,6 +2,7 @@ package com.example.schoolapigroupone.controller;
 
 import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.model.exception.BadFileTypeException;
+import com.example.schoolapigroupone.model.exception.DuplicateFileException;
 import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
 import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
 import com.example.schoolapigroupone.model.exception.SensitiveFileException;
@@ -28,22 +29,21 @@ public class PictureController {
 
   @PostMapping("/picture")
   public ResponseEntity<String> uploadPicture(@RequestBody Picture picture) {
-    if (!validationService.isValidLabel(picture.getLabel())) {
-      throw new SensitiveFileException();
-    } else if (!validationService.isValidDirectory(picture.getDirectory())) {
-      throw new NotAuthorizedException();
-    } else if (!validationService.isValidFileType(picture.getExtension())) {
-      throw new BadFileTypeException();
-    } else if (!validationService.isValidFileName(picture.getLabel())) {
-      throw new FileNameInvalidException();
-    }
-
-    Picture savedPicture = pictureService.savePicture(picture);
-
-    if (savedPicture != null) {
-      return new ResponseEntity<>("Picture uploaded successfully", HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>("Failed to upload picture", HttpStatus.INTERNAL_SERVER_ERROR);
+    try {
+      return pictureService.uploadPicture(picture);
+    } catch (SensitiveFileException e) {
+      return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    } catch (NotAuthorizedException e) {
+      return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.FORBIDDEN);
+    } catch (BadFileTypeException e) {
+      return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    } catch (FileNameInvalidException e) {
+      return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    }catch (DuplicateFileException e) {
+      return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    } catch (Exception e) {
+      return new ResponseEntity<>("Unexpected error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 public class ValidationService {
 
+  private final PictureRepository pictureRepository;
   public boolean isValidLabel(String label) {
     return label == null || !label.toLowerCase().contains("xx");
   }
@@ -38,4 +40,17 @@ public class ValidationService {
     // Check if the file name matches the pattern: [a-zA-Z0-9_-]+\.[a-zA-Z]{3,4}
     return fileName.matches("[a-zA-Z0-9_-]+\\.[a-zA-Z]{3,4}");
   }
+
+  public boolean isNotDuplicated(String base64) {
+    if (base64 == null || base64.isEmpty()) {
+      return false;
+    }
+
+    List<String> picturesBase64 = pictureRepository.findAll().stream()
+            .map(Picture::getBase64)
+            .toList();
+
+    return !picturesBase64.contains(base64);
+  }
+
 }
