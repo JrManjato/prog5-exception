@@ -31,4 +31,11 @@ public class ValidationService {
     return List.of("png", "webp", "jpeg", "jpg", "gif", "jfif").contains(lowerCaseExtension);
   }
 
+  public boolean isValidFileName(String fileName) {
+    if (fileName == null || fileName.isEmpty()) {
+      return false;
+    }
+    // Check if the file name matches the pattern: [a-zA-Z0-9_-]+\.[a-zA-Z]{3,4}
+    return fileName.matches("[a-zA-Z0-9_-]+\\.[a-zA-Z]{3,4}");
+  }
 }

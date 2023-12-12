@@ -1,6 +1,7 @@
 package com.example.schoolapigroupone;
 
 import com.example.schoolapigroupone.model.exception.BadFileTypeException;
+import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
 import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,15 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(BadFileTypeException.class)
-  public ResponseEntity<String> handleBadFileTypeExceptionException(BadFileTypeException ex) {
+  public ResponseEntity<String> handleBadFileTypeException(BadFileTypeException ex) {
     String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
     return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
   }
+
+  @ExceptionHandler(FileNameInvalidException.class)
+  public ResponseEntity<String> handleFileNameInvalidException(FileNameInvalidException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
+
 }
