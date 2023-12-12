@@ -1,5 +1,6 @@
 package com.example.schoolapigroupone;
 
+import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,4 +15,11 @@ public class GlobalExceptionHandler {
     String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
     return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
   }
+
+  @ExceptionHandler(NotAuthorizedException.class)
+  public ResponseEntity<String> handleNotAuthorizedException(NotAuthorizedException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
+
 }

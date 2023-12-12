@@ -16,4 +16,8 @@ public class ValidationService {
     return label == null || !label.toLowerCase().contains("xx");
   }
 
+  public boolean isValidDirectory(String directory) {
+    return directory != null && directory.equals("Pictures");
+  }
+
 }
