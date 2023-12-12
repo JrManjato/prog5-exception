@@ -1,4 +1,5 @@
 package com.example.schoolapigroupone.service;
+
 import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.model.exception.BadRequestException;
 import com.example.schoolapigroupone.repository.PictureRepository;
@@ -8,10 +9,11 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static com.example.schoolapigroupone.service.ValidationService.validateStringFilenameUsingRegex;
 
 @Service
 @AllArgsConstructor
@@ -47,13 +49,7 @@ public class PictureService {
     return pictureRepository.findById(id).orElse(null);
   }
 
-  public static final String REGEX_PATTERN = "^[A-Za-z0-9._-]{1,255}$";
 
-  public static boolean validateStringFilenameUsingRegex(String filename) {
-    if (filename == null) {
-      return false;
-    }
-    return filename.matches(REGEX_PATTERN);
-  }
+
 
 }

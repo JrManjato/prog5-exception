@@ -1,6 +1,7 @@
 package com.example.schoolapigroupone;
 
 import com.example.schoolapigroupone.model.exception.ApiException;
+import com.example.schoolapigroupone.model.exception.SensitiveFileException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,5 +20,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return new ResponseEntity<>(ex.getMessage(), status);
+    }
+    @ExceptionHandler(SensitiveFileException.class)
+    public ResponseEntity<String> handleSensitiveFileException(SensitiveFileException ex) {
+        String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+        return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
     }
 }
