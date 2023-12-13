@@ -42,6 +42,8 @@ public class PictureController {
       return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
     } catch (LargeFileException e) {
       return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE);
+    } catch (CorruptedFileException e) {
+      return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
     } catch (Exception e) {
       return new ResponseEntity<>("Unexpected error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -79,8 +81,8 @@ public class PictureController {
     }
   }
 
-  @GetMapping("/directoriesSize")
-  public ResponseEntity<?> getDirectoriesSize(){
+  @GetMapping("/divs-by-0")
+  public ResponseEntity<?> divsByZero(){
     try{
       int number = pictureService.getDirectoriesSize();
       return ResponseEntity.ok(number);

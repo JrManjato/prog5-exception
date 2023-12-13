@@ -1,14 +1,20 @@
 package com.example.schoolapigroupone.service;
+
 import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.repository.PictureRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.tika.detect.DefaultDetector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -62,6 +68,11 @@ public class ValidationService {
     return unavailablePicturesLabel.contains(label);
   }
 
+  public boolean isCorruptedFile(String type, String base64){
+    byte[] decodedBytes = Base64Utils.decodeFromString(base64);
+    return type.equals(getExtension(decodedBytes));
+  }
+
   public boolean isLargeFile(String base64) {
     if (base64 == null || base64.isEmpty()) {
       return false;
@@ -73,5 +84,20 @@ public class ValidationService {
     // Check if the size of the binary data is over 8MB
     return binaryData.length > 8 * 1024 * 1024; // 8MB in bytes
   }
+  private String getExtension(byte[] decodedBytes){
+    try {
+      InputStream inputStream = new ByteArrayInputStream(decodedBytes);
 
+      AutoDetectParser parser = new AutoDetectParser(new DefaultDetector());
+      BodyContentHandler handler = new BodyContentHandler();
+      Metadata metadata = new Metadata();
+
+      parser.parse(inputStream, handler, metadata);
+      String mimeType = metadata.get(Metadata.CONTENT_TYPE);
+      return mimeType != null ? mimeType.split("/")[1] : "";
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "";
+    }
+  }
 }
