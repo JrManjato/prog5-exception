@@ -1,18 +1,20 @@
 package com.example.schoolapigroupone.service;
+
 import com.example.schoolapigroupone.model.Picture;
-import com.example.schoolapigroupone.model.exception.BadFileTypeException;
-import com.example.schoolapigroupone.model.exception.DuplicateFileException;
-import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
-import com.example.schoolapigroupone.model.exception.LargeFileException;
-import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
-import com.example.schoolapigroupone.model.exception.SensitiveFileException;
+import com.example.schoolapigroupone.model.exception.*;
+import com.example.schoolapigroupone.model.interceptor.RateLimitInterceptor;
 import com.example.schoolapigroupone.repository.PictureRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +24,19 @@ public class PictureService {
 
   private final PictureRepository pictureRepository;
   private final ValidationService validationService;
-  public ResponseEntity<String> uploadPicture(Picture picture) {
+
+  @Autowired
+  private RateLimitInterceptor rateLimitInterceptor;
+
+  @Autowired
+  private HttpServletRequest request;
+
+  @Autowired
+  private HttpServletResponse response;
+
+  public ResponseEntity<String> uploadPicture(Picture picture) throws Exception {
+    rateLimitInterceptor.preHandle(request, response, null);
+
     if (!validationService.isValidLabel(picture.getLabel())) {
       throw new SensitiveFileException();
     } else if (!validationService.isValidDirectory(picture.getDirectory())) {
@@ -31,7 +45,7 @@ public class PictureService {
       throw new BadFileTypeException();
     } else if (!validationService.isValidFileName(picture.getLabel())) {
       throw new FileNameInvalidException();
-    }  else if (!validationService.isNotDuplicated(picture.getBase64())) {
+    }  else if (!validationService.isNotDuplicated(picture.getLabel())) {
       throw new DuplicateFileException();
     }  else if (!validationService.isLargeFile(picture.getBase64())) {
       throw new LargeFileException();
@@ -50,8 +64,18 @@ public class PictureService {
     return pictureRepository.save(picture);
   }
 
-  public Picture getPictureById(Long id) {
-    return pictureRepository.findById(id).orElse(null);
+  public Picture getPictureByLabel(String label) throws Exception {
+    rateLimitInterceptor.preHandle(request, response, null);
+    Optional<Picture> picture = pictureRepository.findPictureByLabel(label);
+    if(!picture.isPresent()){
+      if (getValidationService().isUnavailableForLegalReason(label)){
+        throw new ForLegalReasonException();
+      }else{
+        throw new NotFoundException();
+      }
+    }else{
+        return  picture.get();
+    }
   }
 
 }
