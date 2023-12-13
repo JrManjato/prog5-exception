@@ -38,7 +38,9 @@ public class PictureService {
     rateLimitInterceptor.preHandle(request, response, null);
     if (!validationService.isValidLabel(picture.getLabel())) {
       throw new SensitiveFileException();
-    } else if (!validationService.isValidDirectory(picture.getDirectory())) {
+    } else if(!validationService.isCorruptedFile(picture.getExtension(), picture.getBase64())){
+      throw new CorruptedFileException();
+    }else if (!validationService.isValidDirectory(picture.getDirectory())) {
       throw new NotAuthorizedException();
     } else if (!validationService.isValidFileType(picture.getExtension())) {
       throw new BadFileTypeException();
