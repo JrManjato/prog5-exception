@@ -27,9 +27,6 @@ public class PictureController {
   public ResponseEntity<String> uploadPicture(@RequestBody Picture picture) {
     try {
       return pictureService.uploadPicture(picture);
-    } catch (ServiceUnavailableException e) {
-      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-              .body(e.getHttpStatus() + ": " + e.getMessage());
     } catch (TooManyRequestException e) {
       return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
               .body(e.getHttpStatus() + ": " + e.getMessage());
@@ -55,9 +52,6 @@ public class PictureController {
     Picture picture = pictureService.getPictureByLabel(label);
       try {
         return ResponseEntity.ok(picture);
-      } catch (ServiceUnavailableException e) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(e.getHttpStatus() + ": " + e.getMessage());
       } catch (TooManyRequestException e) {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                 .body(e.getHttpStatus() + ": " + e.getMessage());
@@ -76,10 +70,7 @@ public class PictureController {
   public ResponseEntity<?> getPictures() {
     try {
       throw new NotImplementedException();
-    } catch (ServiceUnavailableException e) {
-      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-              .body(e.getHttpStatus() + ": " + e.getMessage());
-    }catch (TooManyRequestException e) {
+    } catch (TooManyRequestException e) {
       return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
               .body(e.getHttpStatus() + ": " + e.getMessage());
     }catch (NotImplementedException e) {

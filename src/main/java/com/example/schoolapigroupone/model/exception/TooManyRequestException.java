@@ -6,7 +6,7 @@ public class TooManyRequestException extends ApiException {
     private final HttpStatus httpStatus;
 
     public TooManyRequestException() {
-        super(ExceptionType.CLIENT_EXCEPTION, "The service is unavailable");
+        super(ExceptionType.CLIENT_EXCEPTION, "Too many requests");
         this.httpStatus = HttpStatus.TOO_MANY_REQUESTS;
     }
 
