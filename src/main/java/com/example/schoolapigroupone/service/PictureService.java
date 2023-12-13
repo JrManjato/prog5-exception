@@ -79,4 +79,13 @@ public class PictureService {
     }
   }
 
+  public int getDirectoriesSize() {
+    try{
+      int number = 785689/0;
+      return number;
+    }catch (Exception e) {
+      throw new ServerErrorException();
+    }
+  }
+
 }

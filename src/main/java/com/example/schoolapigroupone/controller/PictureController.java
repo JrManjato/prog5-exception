@@ -3,7 +3,6 @@ package com.example.schoolapigroupone.controller;
 import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.model.exception.*;
 import com.example.schoolapigroupone.service.PictureService;
-import com.example.schoolapigroupone.service.ValidationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,11 +70,25 @@ public class PictureController {
     try {
       throw new NotImplementedException();
     } catch (TooManyRequestException e) {
-      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
               .body(e.getHttpStatus() + ": " + e.getMessage());
     }catch (NotImplementedException e) {
       return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
               .body(HttpStatus.NOT_IMPLEMENTED + ": " + e.getMessage());
+    }
+  }
+
+  @GetMapping("/directoriesSize")
+  public ResponseEntity<?> getDirectoriesSize(){
+    try{
+      int number = pictureService.getDirectoriesSize();
+      return ResponseEntity.ok(number);
+    } catch (TooManyRequestException e) {
+      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
+    } catch (ServerErrorException e){
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
     }
   }
 }
