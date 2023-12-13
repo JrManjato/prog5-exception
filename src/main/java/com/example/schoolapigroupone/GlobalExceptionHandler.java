@@ -1,16 +1,10 @@
 package com.example.schoolapigroupone;
 
-import com.example.schoolapigroupone.model.exception.BadFileTypeException;
-import com.example.schoolapigroupone.model.exception.DuplicateFileException;
-import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
-import com.example.schoolapigroupone.model.exception.LargeFileException;
-import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
-import com.example.schoolapigroupone.model.exception.NotFoundException;
+import com.example.schoolapigroupone.model.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import com.example.schoolapigroupone.model.exception.SensitiveFileException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -53,6 +47,29 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(NotFoundException.class)
   public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
+
+  @ExceptionHandler(TooManyRequestException.class)
+  public ResponseEntity<String> handleTooManyRequestException(NotFoundException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
+
+  @ExceptionHandler(ServiceUnavailableException.class)
+  public ResponseEntity<String> handleServiceUnavailableException(NotFoundException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
+
+  @ExceptionHandler(NotImplementedException.class)
+  public ResponseEntity<String> handleNotImplementedException(NotImplementedException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
+  @ExceptionHandler(ForLegalReasonException.class)
+  public ResponseEntity<String> handleForLegalReasonException(ForLegalReasonException ex) {
     String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
     return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
   }

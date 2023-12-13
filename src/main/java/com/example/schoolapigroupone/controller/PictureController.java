@@ -1,13 +1,7 @@
 package com.example.schoolapigroupone.controller;
 
 import com.example.schoolapigroupone.model.Picture;
-import com.example.schoolapigroupone.model.exception.BadFileTypeException;
-import com.example.schoolapigroupone.model.exception.DuplicateFileException;
-import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
-import com.example.schoolapigroupone.model.exception.LargeFileException;
-import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
-import com.example.schoolapigroupone.model.exception.NotFoundException;
-import com.example.schoolapigroupone.model.exception.SensitiveFileException;
+import com.example.schoolapigroupone.model.exception.*;
 import com.example.schoolapigroupone.service.PictureService;
 import com.example.schoolapigroupone.service.ValidationService;
 import lombok.AllArgsConstructor;
@@ -23,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class PictureController {
   private final PictureService pictureService;
-  private final ValidationService validationService;
 
   @GetMapping("/ping")
   public String ping() {
@@ -34,6 +27,12 @@ public class PictureController {
   public ResponseEntity<String> uploadPicture(@RequestBody Picture picture) {
     try {
       return pictureService.uploadPicture(picture);
+    } catch (ServiceUnavailableException e) {
+      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
+    } catch (TooManyRequestException e) {
+      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
     } catch (SensitiveFileException e) {
       return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.BAD_REQUEST);
     } catch (NotAuthorizedException e) {
@@ -51,19 +50,41 @@ public class PictureController {
     }
   }
 
-  @GetMapping("/picture/{id}")
-  public ResponseEntity<?> getPictureById(@PathVariable Long id) {
-    try {
-      Picture picture = pictureService.getPictureById(id);
-      if (picture != null) {
+  @GetMapping("/picture/{label}")
+  public ResponseEntity<?> getPictureByLabel(@PathVariable String label) throws Exception {
+    Picture picture = pictureService.getPictureByLabel(label);
+      try {
         return ResponseEntity.ok(picture);
-      } else {
-        throw new NotFoundException();
+      } catch (ServiceUnavailableException e) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(e.getHttpStatus() + ": " + e.getMessage());
+      } catch (TooManyRequestException e) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(e.getHttpStatus() + ": " + e.getMessage());
+      }catch (ForLegalReasonException e) {
+        return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS);
+      } catch (NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(e.getHttpStatus() + ": " + e.getMessage());
+      } catch (Exception e) {
+        return new ResponseEntity<>("Unexpected error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
-    } catch (NotFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-              .body(e.getHttpStatus() + ": " + e.getMessage());
-    }
+
   }
 
+  @GetMapping("/pictures")
+  public ResponseEntity<?> getPictures() {
+    try {
+      throw new NotImplementedException();
+    } catch (ServiceUnavailableException e) {
+      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
+    }catch (TooManyRequestException e) {
+      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
+    }catch (NotImplementedException e) {
+      return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+              .body(HttpStatus.NOT_IMPLEMENTED + ": " + e.getMessage());
+    }
+  }
 }

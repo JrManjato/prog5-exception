@@ -42,16 +42,24 @@ public class ValidationService {
     return fileName.matches("[a-zA-Z0-9_-]+\\.[a-zA-Z]{3,4}");
   }
 
-  public boolean isNotDuplicated(String base64) {
-    if (base64 == null || base64.isEmpty()) {
+  public boolean isNotDuplicated(String label) {
+    if (label == null || label.isEmpty()) {
       return false;
     }
 
-    List<String> picturesBase64 = pictureRepository.findAll().stream()
-            .map(Picture::getBase64)
+    List<String> picturesLabel = pictureRepository.findAll().stream()
+            .map(Picture::getLabel)
             .toList();
 
-    return !picturesBase64.contains(base64);
+    return !picturesLabel.contains(label);
+  }
+  public boolean isUnavailableForLegalReason(String label){
+    Picture picture1 = Picture.builder()
+            .label("hacked_file.png").build();
+    Picture picture2 = Picture.builder()
+            .label("tapped_file.jpeg").build();
+    List<String> unavailablePicturesLabel = List.of(picture1.getLabel(), picture2.getLabel());
+    return unavailablePicturesLabel.contains(label);
   }
 
   public boolean isLargeFile(String base64) {
