@@ -5,6 +5,7 @@ import com.example.schoolapigroupone.model.exception.DuplicateFileException;
 import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
 import com.example.schoolapigroupone.model.exception.LargeFileException;
 import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
+import com.example.schoolapigroupone.model.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -46,6 +47,12 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(LargeFileException.class)
   public ResponseEntity<String> handleLargeFileException(LargeFileException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
+
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
     String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
     return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
   }

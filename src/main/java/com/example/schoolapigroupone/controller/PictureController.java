@@ -6,6 +6,7 @@ import com.example.schoolapigroupone.model.exception.DuplicateFileException;
 import com.example.schoolapigroupone.model.exception.FileNameInvalidException;
 import com.example.schoolapigroupone.model.exception.LargeFileException;
 import com.example.schoolapigroupone.model.exception.NotAuthorizedException;
+import com.example.schoolapigroupone.model.exception.NotFoundException;
 import com.example.schoolapigroupone.model.exception.SensitiveFileException;
 import com.example.schoolapigroupone.service.PictureService;
 import com.example.schoolapigroupone.service.ValidationService;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +48,21 @@ public class PictureController {
       return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE);
     } catch (Exception e) {
       return new ResponseEntity<>("Unexpected error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @GetMapping("/picture/{id}")
+  public ResponseEntity<?> getPictureById(@PathVariable Long id) {
+    try {
+      Picture picture = pictureService.getPictureById(id);
+      if (picture != null) {
+        return ResponseEntity.ok(picture);
+      } else {
+        throw new NotFoundException();
+      }
+    } catch (NotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
     }
   }
 
