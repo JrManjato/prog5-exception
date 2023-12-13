@@ -52,13 +52,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(TooManyRequestException.class)
-  public ResponseEntity<String> handleTooManyRequestException(NotFoundException ex) {
-    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
-    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
-  }
-
-  @ExceptionHandler(ServiceUnavailableException.class)
-  public ResponseEntity<String> handleServiceUnavailableException(NotFoundException ex) {
+  public ResponseEntity<String> handleTooManyRequestException(TooManyRequestException ex) {
     String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
     return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
   }

@@ -60,7 +60,8 @@ public class PictureService {
     }
   }
 
-  public Picture savePicture(Picture picture) {
+  public Picture savePicture(Picture picture) throws Exception {
+    rateLimitInterceptor.preHandle(request, response, null);
     return pictureRepository.save(picture);
   }
 
