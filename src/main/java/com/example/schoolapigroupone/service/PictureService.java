@@ -25,7 +25,7 @@ public class PictureService {
   private final PictureRepository pictureRepository;
   private final ValidationService validationService;
 
-  @Autowired
+@Autowired
   private RateLimitInterceptor rateLimitInterceptor;
 
   @Autowired
@@ -36,7 +36,6 @@ public class PictureService {
 
   public ResponseEntity<String> uploadPicture(Picture picture) throws Exception {
     rateLimitInterceptor.preHandle(request, response, null);
-
     if (!validationService.isValidLabel(picture.getLabel())) {
       throw new SensitiveFileException();
     } else if (!validationService.isValidDirectory(picture.getDirectory())) {

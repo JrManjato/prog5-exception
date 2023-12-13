@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 @RestController
 @AllArgsConstructor
 public class PictureController {
@@ -86,6 +91,26 @@ public class PictureController {
       return ResponseEntity.ok("Picture with ID " + id + " has been deleted.");
     } catch (ServiceUnavailableException e) {
       return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+    }
+  }
+
+@GetMapping("/simulate-timeout")
+  public ResponseEntity<String> simulateTimeout() {
+    try {
+      CompletableFuture<ResponseEntity<String>> result = CompletableFuture.supplyAsync(() -> {
+        try {
+          Thread.sleep(30000);
+          return ResponseEntity.ok("Request completed successfully after delay.");
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                  .body("Error occurred during simulation");
+        }
+      });
+
+      return result.get(6, TimeUnit.SECONDS); // Timeout set to 6 seconds
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("Request timed out with status code " + HttpStatus.REQUEST_TIMEOUT.value());
     }
   }
 
