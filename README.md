@@ -90,6 +90,8 @@ Thrown when access to a resource is denied for legal reasons.
 
 To test these exceptions, submit requests by following [the postman collection]("https://....").
 
+The log of each exception can be found on the file named `applog.log` located at the root.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE.md).
