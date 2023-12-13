@@ -15,12 +15,5 @@ public class ValidationService {
   public boolean isValidLabel(String label) {
     return label == null || !label.toLowerCase().contains("xx");
   }
-  public static boolean validateStringFilenameUsingRegex(String filename) {
-    final String REGEX_PATTERN = "^[A-Za-z0-9._-]{1,255}$";
-    if (filename == null) {
-      return false;
-    }
-    return filename.matches(REGEX_PATTERN);
-  }
 
 }
