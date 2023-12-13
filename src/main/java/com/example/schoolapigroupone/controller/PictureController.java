@@ -2,17 +2,11 @@ package com.example.schoolapigroupone.controller;
 
 import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.model.exception.*;
-import com.example.schoolapigroupone.model.exception.ServiceUnavailableException;
 import com.example.schoolapigroupone.service.PictureService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -79,13 +73,28 @@ public class PictureController {
     try {
       throw new NotImplementedException();
     } catch (TooManyRequestException e) {
-      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
               .body(e.getHttpStatus() + ": " + e.getMessage());
     }catch (NotImplementedException e) {
       return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
               .body(HttpStatus.NOT_IMPLEMENTED + ": " + e.getMessage());
     }
   }
+
+  @GetMapping("/divs-by-0")
+  public ResponseEntity<?> divsByZero(){
+    try{
+      int number = pictureService.getDirectoriesSize();
+      return ResponseEntity.ok(number);
+    } catch (TooManyRequestException e) {
+      return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
+    } catch (ServerErrorException e){
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body(e.getHttpStatus() + ": " + e.getMessage());
+    }
+  }
+  
   @DeleteMapping("/pictures/{id}")
   public ResponseEntity<?> deletePictureById (@PathVariable Long id){
     try {
@@ -115,5 +124,4 @@ public class PictureController {
       return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("Request timed out with status code " + HttpStatus.REQUEST_TIMEOUT.value());
     }
   }
-
 }

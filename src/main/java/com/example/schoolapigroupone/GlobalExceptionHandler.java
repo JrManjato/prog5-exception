@@ -74,6 +74,11 @@ public class GlobalExceptionHandler {
     String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
     return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
   }
+  @ExceptionHandler(ServerErrorException.class)
+  public ResponseEntity<String> handleServerErrorException(ServerErrorException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
   @ExceptionHandler(CorruptedFileException.class)
   public ResponseEntity<String> handleCorruptedFileException(CorruptedFileException ex) {
     String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
