@@ -1,7 +1,7 @@
 package com.example.schoolapigroupone;
 
 import com.example.schoolapigroupone.model.exception.*;
-import org.springframework.http.HttpStatus;
+import com.example.schoolapigroupone.model.exception.ServiceUnavailableException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,6 +50,13 @@ public class GlobalExceptionHandler {
     String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
     return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
   }
+
+  @ExceptionHandler(ServiceUnavailableException.class)
+  public ResponseEntity<String> handleServiceUnavailableException(ServiceUnavailableException ex) {
+    String errorMessage = "HTTP " + ex.getHttpStatus().value() + " " + ex.getMessage();
+    return new ResponseEntity<>(errorMessage, ex.getHttpStatus());
+  }
+
 
   @ExceptionHandler(TooManyRequestException.class)
   public ResponseEntity<String> handleTooManyRequestException(TooManyRequestException ex) {

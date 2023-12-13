@@ -1,8 +1,8 @@
 package com.example.schoolapigroupone.service;
-
 import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.model.exception.*;
 import com.example.schoolapigroupone.model.interceptor.RateLimitInterceptor;
+import com.example.schoolapigroupone.model.exception.ServiceUnavailableException;
 import com.example.schoolapigroupone.repository.PictureRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -77,6 +77,9 @@ public class PictureService {
     }else{
         return  picture.get();
     }
+  }
+  public void deletePictureById(Long id) {
+    throw new ServiceUnavailableException();
   }
 
 }

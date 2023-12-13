@@ -2,11 +2,12 @@ package com.example.schoolapigroupone.controller;
 
 import com.example.schoolapigroupone.model.Picture;
 import com.example.schoolapigroupone.model.exception.*;
+import com.example.schoolapigroupone.model.exception.ServiceUnavailableException;
 import com.example.schoolapigroupone.service.PictureService;
-import com.example.schoolapigroupone.service.ValidationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,4 +79,14 @@ public class PictureController {
               .body(HttpStatus.NOT_IMPLEMENTED + ": " + e.getMessage());
     }
   }
+  @DeleteMapping("/pictures/{id}")
+  public ResponseEntity<?> deletePictureById (@PathVariable Long id){
+    try {
+      pictureService.deletePictureById(id);
+      return ResponseEntity.ok("Picture with ID " + id + " has been deleted.");
+    } catch (ServiceUnavailableException e) {
+      return new ResponseEntity<>(e.getHttpStatus() + ": " + e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+    }
+  }
+
 }
