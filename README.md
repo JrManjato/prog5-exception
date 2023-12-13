@@ -1,6 +1,45 @@
-# some-jpa-basics
-Just some first exercise for one to know the difference between JPA and JPQL.
+# Exception Simulator in Java
 
-This is quite not an optimal build but it is readable, it is just used to showcase the differenc between JPA and JPQL. But nothing keeps you from using both in one single repository.
+This project is a Java application designed to simulate various common errors encountered during file exchanges. The goal is to provide a testing environment for error management in an application dealing with files. In this case, we have chosen images as a case study.
 
-Also keep in mind : there are 3 ways to inject dependencies, either through `@Autowired` or though the constructor or using the `@Inject` annotation. Feel free to google for their main differences.
+## Simulated Exceptions
+
+### 1. `SensitiveFileException`
+
+This exception is thrown when an attempt is made to download or process a file containing sensitive information. For example, a file that should not be shared due to its confidential content.
+
+### 2. `NotAuthorizedException`
+
+This exception is generated when access to a specific directory is denied. This can simulate a situation where a user tries to access a folder for which they do not have the necessary permissions.
+
+### 3. `BadFileTypeException`
+
+This exception is thrown when a file of an unauthorized type is submitted. For example, if the application expects an image and receives a text file, this exception will be generated.
+
+### 4. `FileNameInvalidException`
+
+This exception indicates that a file is rejected due to an invalid filename. The application may apply specific rules regarding allowed filenames.
+
+### 5. `DuplicateFileException`
+
+When a user tries to download a file that already exists, this exception is thrown to signal a conflict with an existing file.
+
+### 6. `LargeFileException`
+
+This exception is generated when the size of a file exceeds a predefined limit. This could simulate a restriction on the size of downloadable files.
+
+### 7. `NotFoundException`
+
+When a request is made to obtain a file that does not exist, this exception is thrown. It indicates that the requested file was not found.
+
+## Usage
+
+To test these exceptions, submit requests to the application with conditions that trigger the corresponding errors. For example, try to download a file with an invalid name or attempt to access an unauthorized directory.
+
+## Contributing
+
+If you want to contribute to this project, please refer to the guidelines in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.md).
